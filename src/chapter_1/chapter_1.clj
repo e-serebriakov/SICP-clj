@@ -110,3 +110,28 @@ size
 
 (sqrt (+ 100 37))
 
+(defn sqrt2 [x] (letfn [(good-enough? [guess] (< (abs (- (* guess guess) x)) 0.001))
+                        (average [a b] (/ (+ a b) 2))
+                        (improve [guess] (average guess (/ x guess)))
+                        (sqrt-iter [guess] (if (good-enough? guess )
+                                               guess
+                                               (sqrt-iter (improve guess))))]
+                  (sqrt-iter 1.0)))
+
+(sqrt2 9)
+
+(defn factorial [n]
+  (if (= n 1)
+    n
+    (* n (factorial (- n 1)))))
+
+(factorial 3)
+
+(defn factorial2 [n]
+  (letfn [(iter [product counter]
+                (if (> counter n)
+                  product
+                  (iter (* product counter) (+ counter 1))))]
+  (iter 1 1)))
+
+(factorial2 3)
