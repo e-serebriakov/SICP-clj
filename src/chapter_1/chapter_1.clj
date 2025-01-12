@@ -89,46 +89,7 @@ size
 (between-3-and-10 3)
 (between-3-and-10 4)
 
-; Exercise 1.1
-
-; Exercise 1.2
-(/ (+ 5 4 (- 2 (- 3 (+ 6 (/ 4 5))))) (* 3 (- 6 2) (- 2 7)))
-
-; Exercise 1.3
-(defn sum-of-biggest-numbers [a b c]
-  (cond
-    (and (> a c) (> b c)) (sum-of-squares a b)
-    (and (> c a) (> b a)) (sum-of-squares b c)
-    :else (sum-of-squares a c)))
-
-(sum-of-biggest-numbers 1 2 3)
-
-; Exercise 1.4
-; Describe the logic of the following function
-(defn a-plus-abs-b [a b]
-  ((if (> b 0) + -) a b))
-; If b > -> a + b, otherwise -> a - b
-(a-plus-abs-b 1 2)
-(a-plus-abs-b 1 (- 2))
-
-; Exercise 1.5
-(defn p [] p)
-(defn test-1 [x y]
-  (if (= x 0) 0 y))
-(test-1 0 (p))
-
-; Normal-order evaluation
-; (if (= 0 0) 0 (p))
-; (if (= 0 0) 0 (p))
-; etc
-; -> infinite recursion
-
-; Applicative-order evaluation
-; (if (= 0 0) 0 (p)) 
-; 0
-; ---------
-
-(defn good-enought? [guess x]
+(defn good-enough? [guess x]
   (< (abs (- (sqr guess) x)) 0.001))
 
 (defn average [a b] 
@@ -138,7 +99,7 @@ size
   (average guess (/ x guess)))
 
 (defn sqrt-iter [guess x]
-  (if (good-enought? guess x)
+  (if (good-enough? guess x)
     guess
     (sqrt-iter (improve guess x) x)))
 
@@ -149,4 +110,3 @@ size
 
 (sqrt (+ 100 37))
 
-; Exercise 1.6
