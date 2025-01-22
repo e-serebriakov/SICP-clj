@@ -152,3 +152,10 @@ size
   (cc amount 5)))
 
 (count-change 100)
+
+(defn gcd [a b]
+  (if (= b 0)
+    a
+    (gcd b (mod a b))))
+   
+(gcd 206 40)
