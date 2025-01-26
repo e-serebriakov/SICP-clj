@@ -1,4 +1,6 @@
-(ns chapter-1.exercise-1-24)
+(ns chapter-1.exercise-1-24 
+  (:require
+   [clojure.math :as math]))
 
 ;; Modify the timed-prime-test procedure of Exercise 1.22 to use 
 ;; fast-prime? (the Fermat method), and test each of the 12 primes you found 
@@ -9,7 +11,8 @@
 (defn fermat-test [n]
   (letfn [(exp-mod [base exp m]
             (cond (= exp 0) 1
-                  (even? exp) (mod (exp-mod base (/ exp 2) m) m)
+                  (even? exp) (mod (long (math/pow (exp-mod base (/ exp 2) m)
+                                             2)) m)
                   :else (mod (* base (exp-mod base (dec exp) m)) m)))
           (try-it [a]
             (= (exp-mod a n n) a))]
