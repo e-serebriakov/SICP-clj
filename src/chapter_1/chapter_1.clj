@@ -159,3 +159,22 @@ size
     (gcd b (mod a b))))
    
 (gcd 206 40)
+
+(defn sum [term a next b]
+  (letfn [(iter [x result]
+            (if (> x b)
+              result
+              (iter (next x) (+ (term x) result))))]
+    (iter a 0)))
+
+(defn pi-sum [a b]
+  (letfn [(pi-term [x] (/ 1.0 (* x (+ x 2))))
+          (pi-next [x] (+ x 4))]
+    (sum pi-term a pi-next b)))
+
+(pi-sum 1 5)
+
+(defn pi-sum-lambdas [a b]
+  (sum #(/ 1.0 (* % (+ % 2))) a #(+ % 4) b))
+
+(pi-sum-lambdas 1 5)
