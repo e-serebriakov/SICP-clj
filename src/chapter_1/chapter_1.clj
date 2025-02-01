@@ -1,4 +1,6 @@
-(ns chapter-1.chapter-1)
+(ns chapter-1.chapter-1 
+  (:require
+   [clojure.math :refer [cos]]))
 
 486
 
@@ -178,3 +180,24 @@ size
   (sum #(/ 1.0 (* % (+ % 2))) a #(+ % 4) b))
 
 (pi-sum-lambdas 1 5)
+
+(defn fixed-point [f first-guess]
+  (let [tolerance 0.00001]
+    (letfn [(close-enough? [v1 v2]
+              (let [diff (abs (- v1 v2))]
+                (< diff tolerance)))
+            (iterate-guess [guess]
+              (let [next-guess (f guess)]
+                (if (close-enough? guess next-guess)
+                  next-guess
+                  (iterate-guess next-guess))))]
+      (iterate-guess first-guess))))
+
+(defn average [x y]
+  (/ (+ x y) 2))
+
+(defn sqrt [x]
+  (fixed-point #(average % (/ x %)) 1.0))
+
+(sqrt 4.0)
+(fixed-point #(cos %) 1.0)
