@@ -33,6 +33,9 @@
            (fn [i] 1.0)
            7)
 
+;; If your cont-frac procedure generates a recursive process, 
+;; write one that generates an iterative process. If
+;; it generates an iterative process, write one that generates a recursive process.
 (defn cont-frac-iterative [n d k]
   (letfn [(iter [i result]
             (if (< i 1)
@@ -46,6 +49,3 @@
 
 (doseq [k (range 1 15)]
   (println "k =" k "value =" (cont-frac-iterative (fn [i] 1.0) (fn [i] 1.0) k)))
-
-
-

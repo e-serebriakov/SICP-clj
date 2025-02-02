@@ -201,3 +201,33 @@ size
 
 (sqrt 4.0)
 (fixed-point #(cos %) 1.0)
+
+(def dx 0.0001)
+(defn deriv [g]
+  #(/ (- (g (+ % dx)) (g %)) dx))
+(defn cube [x] (* x x x))
+((deriv cube) 5)
+
+(defn newton-transform [g]
+  #(- % (/ (g %) ((deriv g) %))))
+
+(defn newtons-method [g guess]
+  (fixed-point (newton-transform g) guess))
+
+(defn fixed-point-of-transform [g transform guess]
+  (fixed-point (transform g) guess))
+
+(defn average-damp [f]
+  #(/ (+ % (f %)) 2))
+
+(defn sqrt [x]
+  (fixed-point-of-transform #(/ x %) average-damp 1.0))
+
+(sqrt 9)
+
+(defn square [x] (* x x ))
+
+(defn sqrt-newton [x]
+  (fixed-point-of-transform #(- (square %) x) newton-transform 1.0))
+
+(sqrt-newton 9)
