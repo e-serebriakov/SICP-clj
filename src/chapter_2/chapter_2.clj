@@ -54,3 +54,17 @@
 (print-rat one-half)
 (print-rat (add-rat one-half one-third))
 (print-rat (add-rat one-third one-third))
+
+(defn cons1 [x y] [x y])
+(cons1 1
+       (cons1 2
+             (cons1 3
+                    (cons1 4 nil))))
+
+(def l (list 1 2 3 4))
+(first l)
+(rest l)
+(nth l 2)
+(conj l 5)
+(concat l l)
+(reduce conj l l)
