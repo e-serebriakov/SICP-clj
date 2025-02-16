@@ -68,3 +68,21 @@
 (conj l 5)
 (concat l l)
 (reduce conj l l)
+
+(defn scale-tree [root factor]
+  (cond 
+    (nil? root) nil
+    (number? root) (* root factor)
+    :else (list (scale-tree (first root) factor)
+                (scale-tree (last root) factor))))
+
+(scale-tree (list (list 1 2) (list 3 (list 4 5))) 10)
+
+(defn scale-tree [root factor]
+  (map (fn [node]
+         (if (number? node)
+           (* node factor)
+           (scale-tree node factor)))
+       root))
+       
+(scale-tree (list (list 1 2) (list 3 (list 4 5))) 10)
