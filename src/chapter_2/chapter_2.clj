@@ -86,3 +86,57 @@
        root))
        
 (scale-tree (list (list 1 2) (list 3 (list 4 5))) 10)
+
+(defn filter-1 [predicate sequence]
+  (when (seq sequence)
+    (if (predicate (first sequence))
+      (cons (first sequence) (filter-1 predicate (rest sequence)))
+      (filter-1 predicate (rest sequence)))))
+
+(filter-1 odd? (list 1 2 3 4 5))
+
+(defn accumulate [op initial sequence]
+  (if (empty? sequence)
+    initial
+    (op (first sequence) 
+        (accumulate op initial (rest sequence)))))
+
+(accumulate + 0 (list 1 2 3 4 5))
+
+(defn enumerate-interval [low high]
+  (if (> low high)
+    nil
+    (cons low (enumerate-interval (inc low) high))))
+    
+(enumerate-interval 1 5)
+
+(defn enumerate-tree [tree]
+  (cond 
+    (not (sequential? tree)) (list tree)
+    (empty? tree) nil
+    :else (concat (enumerate-tree (first tree))
+                  (enumerate-tree (rest tree)))))
+
+(defn enumerate-tree [tree]
+  (if (sequential? tree)
+    (mapcat enumerate-tree (seq tree))
+    (list tree)))
+
+(enumerate-tree '(1 (2 3) 4))
+(enumerate-tree '((1 2) (3 4)))
+
+(defn sum-odd-squares [tree]
+  (accumulate + 0 (map #(* % %) (filter odd? (enumerate-tree tree)))))
+
+(sum-odd-squares '(1 (2 3) 4))
+
+(defn fib [n]
+  (if (< n 2)
+    n
+    (+ (fib (- n 1))
+       (fib (- n 2)))))
+
+(defn even-fibs [n]
+  (filter even? (map fib (enumerate-interval 0 n))))
+
+(even-fibs 4)
