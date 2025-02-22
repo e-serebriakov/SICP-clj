@@ -1,6 +1,7 @@
 (ns chapter-2.chapter-2 
   (:require
-   [chapter-1.chapter-1 :refer [gcd]]))
+   [chapter-1.chapter-1 :refer [gcd]]
+   [chapter-1.exercise-1-33 :refer [prime?]]))
 
 (defn make-rat [n d] [n d])
 
@@ -140,3 +141,38 @@
   (filter even? (map fib (enumerate-interval 0 n))))
 
 (even-fibs 4)
+
+
+;; Nested Mappings
+(accumulate concat nil (map (fn [i]
+                              (map (fn [j] (list i j))
+                                   (enumerate-interval 1 (dec i))))
+                            (enumerate-interval 1 10)))
+
+(defn flatmap [proc seq]
+  (accumulate concat nil (map proc seq)))
+
+(defn prime-sum? [pair]
+  (prime? (+ (first pair) (last pair))))
+
+(defn make-pair-sum [pair]
+  (list (first pair) (last pair) (+ (first pair) (last pair))))
+
+(defn prime-sum-pairs [n]
+  (map make-pair-sum
+       (filter prime-sum? (flatmap
+                           (fn [i]
+                             (map (fn [j] (list i j))
+                                  (enumerate-interval 1 (dec i))))
+                           (enumerate-interval 1 n)))))
+                           
+(prime-sum-pairs 10)
+
+(defn permutations [s]
+  (if (empty? s) (list nil)
+      (flatmap (fn [x]
+                 (map (fn [p] (cons x p))
+                      (permutations (filter #(not= x %) s))))
+               s)))
+
+(permutations (list 1 2 3))
