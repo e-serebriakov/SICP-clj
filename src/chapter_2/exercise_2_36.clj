@@ -25,4 +25,4 @@
           (accumulate-n op init (map (fn [item] (rest item)) seqs)))))
 
 (def s (list '(1 2 3) '(4 5 6) '(7 8 9) '(10 11 12)))
-(accumulate-n + 0 s)
+(accumulate-n + 0 s) ; (22 26 30)
