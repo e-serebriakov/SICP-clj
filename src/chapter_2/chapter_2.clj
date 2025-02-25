@@ -178,3 +178,17 @@
 (permutations (list 1 2 3))
 
 ;; 2.2.4 Example: A Picture Language
+(defn test-painter 
+  "Creates a simple test painter that just returns its label"
+  [label]
+  label)
+
+(defn beside
+  "Combines two painters side by side"
+  [p1 p2]
+  (str "(" p1 " beside " p2 ")"))
+
+(defn below
+  "Combines two painters one below another"
+  [p1 p2]
+  (str "(" p1 " below " p2 ")"))
