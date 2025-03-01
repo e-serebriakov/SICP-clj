@@ -1,7 +1,11 @@
 (ns chapter-2.chapter-2 
   (:require
    [chapter-1.chapter-1 :refer [gcd]]
-   [chapter-1.exercise-1-33 :refer [prime?]]))
+   [chapter-1.exercise-1-33 :refer [prime?]]
+   [chapter-2.exercise-2-46 :refer [add-vect make-vect scale-vect xcor-vect
+                                    ycor-vect]]
+   [chapter-2.exercise-2-47 :refer [edge-1-frame edge-2-frame origin-frame]]
+   [chapter-2.exrcise-2-50 :refer [transform-painter]]))
 
 (defn make-rat [n d] [n d])
 
@@ -192,3 +196,24 @@
   "Combines two painters one below another"
   [p1 p2]
   (str "(" p1 " below " p2 ")"))
+
+(defn frame-coord-map [frame]
+  (fn [v]
+    (add-vect
+     (origin-frame frame)
+     (add-vect (scale-vect (xcor-vect v) (edge-1-frame frame))
+               (scale-vect (ycor-vect v) (edge-2-frame frame))))))
+
+(defn beside [painter1 painter2]
+  (let [split-point (make-vect 0.5 0.0)
+        paint-left (transform-painter painter1
+                                      (make-vect 0.0 0.0)
+                                      split-point
+                                      (make-vect 0.0 1.0))
+        paint-right (transform-painter painter2
+                                       split-point
+                                        (make-vect 1.0 0.0)
+                                        (make-vect 0.5 1.0))]
+    (fn [frame] 
+      (paint-left frame)
+      (paint-right frame))))
