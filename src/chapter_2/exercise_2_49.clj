@@ -1,6 +1,8 @@
 (ns chapter-2.exercise-2-49
-  (:require [chapter-2.exercise-2-46 :refer [make-vect]]
-            [chapter-2.exercise-2-48 :refer [make-segment]]))
+  (:require
+   [chapter-2.chapter-2 :refer [frame-coord-map]]
+   [chapter-2.exercise-2-46 :refer [make-vect]]
+   [chapter-2.exercise-2-48 :refer [make-segment]]))
 
 ;; Use segments->painter to define the following primitive painters:
 ;; a. The painter that draws the outline of the designated frame.

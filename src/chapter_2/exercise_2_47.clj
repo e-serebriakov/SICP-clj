@@ -10,14 +10,14 @@
 (defn make-frame [origin edge1 edge2]
   (list origin edge1 edge2))
 
-(def origin first)
-(def edge-1 second)
-(def edge-2 last)
+(def origin-frame first)
+(def edge-1-frame second)
+(def edge-2-frame last)
 
 (def frame (make-frame 1 2 3))
-(origin frame)
-(edge-1 frame)
-(edge-2 frame)
+(origin-frame frame)
+(edge-1-frame frame)
+(edge-2-frame frame)
 
 
 (defn make-frame [origin edge1 edge2]
