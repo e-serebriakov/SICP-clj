@@ -217,3 +217,15 @@
     (fn [frame] 
       (paint-left frame)
       (paint-right frame))))
+
+(defn flip-vert [painter]
+  (transform-painter painter
+                     (make-vect 0.0 1.0)    ; new origin point
+                     (make-vect 1.0 1.0)    ; new end point for edge1
+                     (make-vect 0.0 0.0)))  ; new end point for edge2
+
+(defn square-of-four [tl tr bl br]
+  (fn [painter]
+    (let [top (beside (tl painter) (tr painter))
+          bottom (beside (bl painter) (br painter))]
+      (below bottom top))))
