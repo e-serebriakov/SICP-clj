@@ -2,10 +2,10 @@
   (:require
    [chapter-1.chapter-1 :refer [gcd]]
    [chapter-1.exercise-1-33 :refer [prime?]]
-   [chapter-2.exercise-2-46 :refer [add-vect make-vect scale-vect xcor-vect
-                                    ycor-vect]]
-   [chapter-2.exercise-2-47 :refer [edge-1-frame edge-2-frame origin-frame]]
-   [chapter-2.exrcise-2-50 :refer [transform-painter]]))
+   [chapter-2.exercise-2-46 :refer [add-vect make-vect scale-vect sub-vect
+                                    xcor-vect ycor-vect]]
+   [chapter-2.exercise-2-47 :refer [edge-1-frame edge-2-frame make-frame
+                                    origin-frame]]))
 
 (defn make-rat [n d] [n d])
 
@@ -204,6 +204,15 @@
      (add-vect (scale-vect (xcor-vect v) (edge-1-frame frame))
                (scale-vect (ycor-vect v) (edge-2-frame frame))))))
 
+(defn transform-painter [painter origin corner1 corner2]
+  (fn [frame]
+    (let [m (frame-coord-map frame)
+          new-origin (m origin)]
+      (painter (make-frame
+                new-origin
+                (sub-vect (m corner1) new-origin)
+                (sub-vect (m corner2) new-origin))))))
+
 (defn beside [painter1 painter2]
   (let [split-point (make-vect 0.5 0.0)
         paint-left (transform-painter painter1
@@ -229,3 +238,28 @@
     (let [top (beside (tl painter) (tr painter))
           bottom (beside (bl painter) (br painter))]
       (below bottom top))))
+
+
+;; 2.3 Symbolic Data
+(def a 1)
+a
+(+ 1 a)
+(first '(a b c))
+(= 'a 'a) ; => true
+
+(defn memq
+  "If the symbol is not contained in the
+   list (i.e., is not eq? to any item in the list), then memq returns false. Other-
+   wise, it returns the sublist of the list beginning with the first occurrence
+   of the symbol:
+  
+   Examples:
+   (memq 'apple '(pear apple prune)) => (apple prune)
+   (memq 'apple '(pear banana prune)) => false"
+  [item x]
+  (cond (empty? x) false
+        (= item (first x)) x
+        :else (memq item (rest x))))
+
+(memq 'apple '(pear banana prune))
+(memq 'apple '(pear apple prune))
