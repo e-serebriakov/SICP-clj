@@ -325,3 +325,23 @@ a
 (deriv '(+ x 3) 'x)
 (deriv '(* x y) 'x)
 (deriv '(* (* x y) (+ x 3)) 'x)
+
+;; Example: Representing Sets
+(defn elements-of-set? [x set]
+  (cond (empty? set) false
+        (= (first set) x) true
+        :else (elements-of-set? x (rest set))))
+
+(elements-of-set? 4 '(1 2 3 4))
+
+(defn adjoin-set [x set]
+  (if (elements-of-set? x set)
+    set
+    (cons x set)))
+    
+(defn intersection-set [s1 s2]
+  (cond (or (empty? s1) (empty? s2)) '()
+        (elements-of-set? (first s1) s2) (cons (first s1) (intersection-set (rest s1) s2))
+        :else (intersection-set (rest s1) s2)))
+ 
+(intersection-set '(1 2 3) '(2 3 4))
