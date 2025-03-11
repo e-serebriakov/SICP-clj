@@ -345,3 +345,25 @@ a
         :else (intersection-set (rest s1) s2)))
  
 (intersection-set '(1 2 3) '(2 3 4))
+
+(defn elements-of-ordered-set? [x set]
+  (cond (empty? set) false
+        (= (first set) x) true
+        (> (first set) x) false
+        :else (elements-of-ordered-set? x (rest set))))
+
+(elements-of-ordered-set? 3 '(1 2 3))
+(elements-of-ordered-set? 4 '(1 2 5 6))
+
+
+(defn intersection-ordered-set [s1 s2]
+  (if (or (empty? s1) (empty? s2))
+    '()
+    (let [[x1 & xs1] s1
+          [x2 & xs2] s2]
+      (cond (= x1 x2) (cons x1 (intersection-ordered-set xs1 xs2))
+            (< x1 x2) (intersection-ordered-set xs1 s2)
+            (< x2 x1) (intersection-ordered-set s1 xs2)))))
+
+(intersection-ordered-set '(1 2 3) '(3 4 5))
+
