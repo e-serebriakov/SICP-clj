@@ -367,3 +367,25 @@ a
 
 (intersection-ordered-set '(1 2 3) '(3 4 5))
 
+;; Sets as binary trees
+(defn entry [tree] (first tree))
+(defn left-branch [tree] (second tree))
+(defn right-branch [tree] (last tree))
+(defn make-tree [entry left right]
+  (list entry left right))
+
+(defn elements-of-tree-set? [x set]
+  (cond (empty? set) false
+        (= x (entry set)) true
+        (< x (entry set)) (elements-of-tree-set? x (left-branch set))
+        (> x (entry set)) (elements-of-tree-set? x (right-branch set))))
+
+(defn adjoin-tree-set [x set]
+  (cond (empty? set) (make-tree x '() '())
+        (= x (entry set)) set
+        (< x (entry set)) (make-tree (entry set)
+                                     (adjoin-tree-set x (left-branch set))
+                                     (right-branch set))
+        (> x (entry set)) (make-tree (entry set)
+                                     (left-branch set)
+                                     (adjoin-tree-set x (right-branch set)))))
