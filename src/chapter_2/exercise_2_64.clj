@@ -10,7 +10,7 @@
 ;; car is the constructed tree and whose cdr is the list of elements 
 ;; not included in the tree. 
 (defn partial-tree [elements n]
-  (if (zero? 0)
+  (if (zero? n)
     (cons '() elements)
     (let [left-size (quot (dec n) 2)
           left-result (partial-tree elements left-size)
