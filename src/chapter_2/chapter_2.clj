@@ -389,3 +389,76 @@ a
         (> x (entry set)) (make-tree (entry set)
                                      (left-branch set)
                                      (adjoin-tree-set x (right-branch set)))))
+
+
+;; Huffman trees
+(defn make-leaf [symbol weight]
+  (list 'leaf symbol weight))
+
+(defn leaf? [object] (= (first object) 'leaf))
+
+(defn symbol-leaf [x] (second x))
+(defn weight-leaf [x] (last x))
+
+(defn append [list1 list2]
+  (if (empty? list1)
+    list2
+    (cons (first list1) (append (rest list1) list2))))
+
+(defn left-branch [tree] (first tree))
+(defn right-branch [tree] (second tree))
+(defn symbols [tree]
+  (if (leaf? tree)
+    (list symbol-leaf tree)
+    (second tree)))
+(defn weight [tree]
+  (if (leaf? tree)
+    (weight-leaf tree)
+    (last tree)))
+
+(defn make-code-tree [left right]
+  (list left
+        right
+        (append (symbols left) (symbols right))
+        (+ (weight left) (weight right))))
+       
+(defn choose-branch [bit branch]
+  (cond (zero? bit) (left-branch branch)
+        (= bit 1) (right-branch branch)
+        :else (throw (ex-info "bad bit" { :bit bit }))))
+
+
+;; (defn decode [bits tree]
+;;   (letfn [(decode-1 [bits current-branch]
+;;                     (if (empty? bits)
+;;                       '()
+;;                       (let [next-branch (choose-branch (first bits) current-branch)]
+;;                         (if (leaf? next-branch)
+;;                           (cons (symbol-leaf next-branch)
+;;                                 (decode-1 (rest bits) tree))
+;;                           (decode-1 (rest bits) next-branch)))))]
+;;     (decode-1 bits tree)))
+
+(defn decode [bits tree]
+  (->> bits
+       (reduce 
+        (fn [[result current-branch] bit]
+          (let [next-branch (choose-branch bit current-branch)]
+            (if (leaf? next-branch)
+              [(conj result (symbol-leaf next-branch)) tree]
+              [result next-branch])))
+        [[] tree])
+       first))
+
+(defn adjoin-set [x set]
+  (cond (empty? set) (list x)
+        (< (weight x) (weight (first set))) (cons x set)
+        :else (cons (first set) (adjoin-set x (rest set)))))
+
+(defn make-leaf-set [pairs]
+  (if (empty? pairs)
+    '()
+    (let [pair (first pairs)]
+      (adjoin-set (make-leaf (first pair)
+                             (last pair))
+                  (make-leaf-set (rest pairs))))))
