@@ -409,8 +409,8 @@ a
 (defn right-branch [tree] (second tree))
 (defn symbols [tree]
   (if (leaf? tree)
-    (list symbol-leaf tree)
-    (second tree)))
+    (list (symbol-leaf tree))
+    (nth tree 2)))
 (defn weight [tree]
   (if (leaf? tree)
     (weight-leaf tree)
@@ -419,7 +419,7 @@ a
 (defn make-code-tree [left right]
   (list left
         right
-        (append (symbols left) (symbols right))
+        (concat (symbols left) (symbols right))
         (+ (weight left) (weight right))))
        
 (defn choose-branch [bit branch]
