@@ -5,7 +5,8 @@
    [chapter-2.exercise-2-46 :refer [add-vect make-vect scale-vect sub-vect
                                     xcor-vect ycor-vect]]
    [chapter-2.exercise-2-47 :refer [edge-1-frame edge-2-frame make-frame
-                                    origin-frame]]))
+                                    origin-frame]]
+   [clojure.math :as math]))
 
 (defn make-rat [n d] [n d])
 
@@ -462,3 +463,104 @@ a
       (adjoin-set (make-leaf (first pair)
                              (last pair))
                   (make-leaf-set (rest pairs))))))
+
+
+;; Multiple Representations for Abstract Data
+
+;; (defn make-from-real-imag [x y] (list x y))
+;; (defn make-from-mag-ang [r a]
+;;   (list (* r (math/cos a)) (* r (math/sin a))))
+
+(defn attach-tag [type-tag contents] 
+  (list type-tag contents))
+
+(defn type-tag [datum]
+  (if (and (seq? datum) 
+           (= (count datum) 2))
+    (first datum)
+    (throw (ex-info "Bad tagged datum: TYPE-TAG" {:datum datum}))))
+
+(defn contents [datum] 
+  (if (and (seq? datum)
+           (= (count datum) 2))
+    (second datum)
+    (throw (ex-info "Bad tagged datum: CONTENTS" {:datum datum}))))
+
+(defn rectangular? [z]
+  (= (type-tag z) 'rectangular))
+
+(defn polar? [z]
+  (= (type-tag z) 'polar))
+
+(defn real-part-rectangular [z]
+  (first z))
+
+(defn imag-part-rectangular [z]
+  (second z))
+
+(defn magnitude-rectangular [z]
+  (math/sqrt (+ (math/pow (real-part-rectangular z) 2)
+                (math/pow (imag-part-rectangular z) 2))))
+
+(defn angle-rectangular [z]
+  (math/atan2 (imag-part-rectangular z)
+             (real-part-rectangular z)))
+            
+(defn make-from-real-imag-rectangular [x y]
+  (attach-tag 'rectangular (list x y)))
+
+(defn make-from-mag-ang-rectangular [r a]
+  (attach-tag 'rectangular (list (* r (math/cos a))
+                                 (* r (math/sin a)))))
+(defn magnitude-polar [z]
+  (first z))
+
+(defn angle-polar [z]
+  (second z))
+
+(defn real-part-polar [z]
+  (* (magnitude-polar z)
+     (math/cos (angle-polar z))))
+
+(defn imag-part-polar [z]
+  (* (magnitude-polar z) (math/sin (angle-polar z))))
+
+(defn make-from-real-imag-polar [x y]
+  (attach-tag 'polar (list (math/sqrt (+ (math/pow x 2)
+                                         (math/pow y 2)))
+                           (math/atan2 y x))))
+
+(defn make-from-mag-ang-polar [r a]
+  (attach-tag 'polar (list r a)))
+
+(defn real-part [z]
+  (cond (rectangular? z) (real-part-rectangular (contents z))
+        (polar? z) (real-part-polar (contents z))
+        :else (throw (ex-info "Unknown type: REAL PART" {:z z}))))
+
+(defn imag-part [z]
+  (cond (rectangular? z) (imag-part-rectangular (contents z))
+        (polar? z) (imag-part-polar (contents z))
+        :else (throw (ex-info "Unknown type: IMAG PART" {:z z}))))
+
+(defn magnitude [z]
+  (cond (rectangular? z) (magnitude-rectangular (contents z))
+        (polar? z) (magnitude-polar (contents z))
+        :else (throw (ex-info "Unknown type: MAGNITUDE" {:z z}))))
+
+(defn angle [z]
+  (cond (rectangular? z) (angle-rectangular (contents z))
+        (polar? z) (angle-polar (contents z))
+        :else (throw (ex-info "Unknown type: ANGLE" {:z z}))))
+
+                       
+(defn make-from-real-imag [x y]
+  (make-from-mag-ang-rectangular x y))
+
+(defn make-from-mag-ang [r a]
+  (make-from-mag-ang-polar r a))
+
+(defn add-complex [z1 z2]
+  (make-from-real-imag (+ (real-part z1) (real-part z2))
+                       (+ (imag-part z1) (imag-part z2))))
+
