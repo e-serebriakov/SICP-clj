@@ -1,4 +1,4 @@
-(ns chapter-2.chapter-2 
+(ns chapter-2.chapter-2
   (:require
    [chapter-1.chapter-1 :refer [gcd]]
    [chapter-1.exercise-1-33 :refer [prime?]]
@@ -10,7 +10,7 @@
 
 (defn make-rat [n d] [n d])
 
-(defn make-rat [n d] 
+(defn make-rat [n d]
   (let [g (gcd n d)]
     [(/ n g) (/ d g)]))
 
@@ -27,7 +27,7 @@
   (make-rat (- (* (numer x) (denom y))
                (* (numer y) (denom x)))
             (* (denom x) (denom y))))
-           
+
 (defn mult-rat [x y]
   (make-rat (* (numer x) (numer y))
             (* (denom x) (denom y))))
@@ -64,8 +64,8 @@
 (defn cons1 [x y] [x y])
 (cons1 1
        (cons1 2
-             (cons1 3
-                    (cons1 4 nil))))
+              (cons1 3
+                     (cons1 4 nil))))
 
 (def l (list 1 2 3 4))
 (first l)
@@ -76,7 +76,7 @@
 (reduce conj l l)
 
 (defn scale-tree [root factor]
-  (cond 
+  (cond
     (nil? root) nil
     (number? root) (* root factor)
     :else (list (scale-tree (first root) factor)
@@ -90,7 +90,7 @@
            (* node factor)
            (scale-tree node factor)))
        root))
-       
+
 (scale-tree (list (list 1 2) (list 3 (list 4 5))) 10)
 
 (defn filter-1 [predicate sequence]
@@ -104,7 +104,7 @@
 (defn accumulate [op initial sequence]
   (if (empty? sequence)
     initial
-    (op (first sequence) 
+    (op (first sequence)
         (accumulate op initial (rest sequence)))))
 
 (accumulate + 0 (list 1 2 3 4 5))
@@ -113,11 +113,11 @@
   (if (> low high)
     nil
     (cons low (enumerate-interval (inc low) high))))
-    
+
 (enumerate-interval 1 5)
 
 (defn enumerate-tree [tree]
-  (cond 
+  (cond
     (not (sequential? tree)) (list tree)
     (empty? tree) nil
     :else (concat (enumerate-tree (first tree))
@@ -170,7 +170,7 @@
                              (map (fn [j] (list i j))
                                   (enumerate-interval 1 (dec i))))
                            (enumerate-interval 1 n)))))
-                           
+
 (prime-sum-pairs 10)
 
 (defn permutations [s]
@@ -183,7 +183,7 @@
 (permutations (list 1 2 3))
 
 ;; 2.2.4 Example: A Picture Language
-(defn test-painter 
+(defn test-painter
   "Creates a simple test painter that just returns its label"
   [label]
   label)
@@ -222,9 +222,9 @@
                                       (make-vect 0.0 1.0))
         paint-right (transform-painter painter2
                                        split-point
-                                        (make-vect 1.0 0.0)
-                                        (make-vect 0.5 1.0))]
-    (fn [frame] 
+                                       (make-vect 1.0 0.0)
+                                       (make-vect 0.5 1.0))]
+    (fn [frame]
       (paint-left frame)
       (paint-right frame))))
 
@@ -267,7 +267,7 @@ a
 
 (defn variable? [x]
   (symbol? x))
- 
+
 (defn same-variable? [v1 v2]
   (and (variable? v1) (variable? v2) (= v1 v2)))
 
@@ -292,7 +292,7 @@ a
         (=number? m2 1) m1
         (and (number? m1) (number? m2)) (* m1 m2)
         :else (list '* m1 m2)))
- 
+
 (defn sum? [x]
   (and (seq? x) (= (first x) '+)))
 
@@ -339,12 +339,12 @@ a
   (if (elements-of-set? x set)
     set
     (cons x set)))
-    
+
 (defn intersection-set [s1 s2]
   (cond (or (empty? s1) (empty? s2)) '()
         (elements-of-set? (first s1) s2) (cons (first s1) (intersection-set (rest s1) s2))
         :else (intersection-set (rest s1) s2)))
- 
+
 (intersection-set '(1 2 3) '(2 3 4))
 
 (defn elements-of-ordered-set? [x set]
@@ -422,11 +422,11 @@ a
         right
         (concat (symbols left) (symbols right))
         (+ (weight left) (weight right))))
-       
+
 (defn choose-branch [bit branch]
   (cond (zero? bit) (left-branch branch)
         (= bit 1) (right-branch branch)
-        :else (throw (ex-info "bad bit" { :bit bit }))))
+        :else (throw (ex-info "bad bit" {:bit bit}))))
 
 
 ;; (defn decode [bits tree]
@@ -442,7 +442,7 @@ a
 
 (defn decode [bits tree]
   (->> bits
-       (reduce 
+       (reduce
         (fn [[result current-branch] bit]
           (let [next-branch (choose-branch bit current-branch)]
             (if (leaf? next-branch)
@@ -471,16 +471,16 @@ a
 ;; (defn make-from-mag-ang [r a]
 ;;   (list (* r (math/cos a)) (* r (math/sin a))))
 
-(defn attach-tag [type-tag contents] 
+(defn attach-tag [type-tag contents]
   (list type-tag contents))
 
 (defn type-tag [datum]
-  (if (and (seq? datum) 
+  (if (and (seq? datum)
            (= (count datum) 2))
     (first datum)
     (throw (ex-info "Bad tagged datum: TYPE-TAG" {:datum datum}))))
 
-(defn contents [datum] 
+(defn contents [datum]
   (if (and (seq? datum)
            (= (count datum) 2))
     (second datum)
@@ -504,8 +504,8 @@ a
 
 (defn angle-rectangular [z]
   (math/atan2 (imag-part-rectangular z)
-             (real-part-rectangular z)))
-            
+              (real-part-rectangular z)))
+
 (defn make-from-real-imag-rectangular [x y]
   (attach-tag 'rectangular (list x y)))
 
@@ -553,7 +553,6 @@ a
         (polar? z) (angle-polar (contents z))
         :else (throw (ex-info "Unknown type: ANGLE" {:z z}))))
 
-                       
 (defn make-from-real-imag [x y]
   (make-from-mag-ang-rectangular x y))
 
@@ -564,3 +563,149 @@ a
   (make-from-real-imag (+ (real-part z1) (real-part z2))
                        (+ (imag-part z1) (imag-part z2))))
 
+(def op-table (atom {}))
+
+(defn put-op [op types proc]
+  (swap! op-table assoc-in [op types] proc))
+
+(defn get-op [op types]
+  (get-in @op-table [op types]))
+
+;; 2.5 Systems with Generic Operations
+(defn apply-generic [op & args]
+  (let [type-tags (map type-tag args)
+        proc (get-op op type-tags)]
+    (if proc
+      (apply proc (map contents args))
+      (throw (ex-info "No method for these types: APPLY-GENERIC"
+                      {:op op :type-tags type-tags})))))
+
+(defn add [x y] (apply-generic 'add x y))
+(defn sub [x y] (apply-generic 'sub x y))
+(defn mul [x y] (apply-generic 'mul x y))
+(defn div [x y] (apply-generic 'div x y))
+
+(defn install-lisp-number-package []
+  (letfn [(tag [x] (attach-tag 'lisp-number x))]
+    (put-op 'add '(lisp-number 'lisp-number) (fn [x y] (tag (+ x y))))
+    (put-op 'sub '(lisp-number 'lisp-number) (fn [x y] (tag (- x y))))
+    (put-op 'mul '(lisp-number 'lisp-number) (fn [x y] (tag (* x y))))
+    (put-op 'div '(lisp-number 'lisp-number) (fn [x y] (tag (/ x y))))
+    (put-op 'make 'lisp-number (fn [x] (tag x)))
+    'done))
+
+(defn make-lisp-number [x]
+  ((get-op 'make 'lisp-number) x))
+
+(defn install-rational-package []
+  (letfn [(numer [x] (first x))
+          (denom [x] (last x))
+          (make-rat [n d]
+            (let [g (gcd n d)]
+              (list (/ n g) (/ d g))))
+          (add-rat [x y]
+            (make-rat (+ (* (numer x) (denom y))
+                         (* (numer y) (denom x)))
+                      (* (denom x) (denom y))))
+          (sub-rat [x y]
+            (make-rat (- (* (numer x) (denom y))
+                         (* (numer y) (denom x)))
+                      (* (denom x) (denom y))))
+
+          (mult-rat [x y]
+            (make-rat (* (numer x) (numer y))
+                      (* (denom x) (denom y))))
+
+          (div-rat [x y]
+            (make-rat (* (numer x) (denom y))
+                      (* (numer y) (denom x))))
+          (tag [x] (attach-tag 'rational x))]
+    (put-op 'add '(rational 'rational) (fn [x y] (tag (add-rat x y))))
+    (put-op 'sub '(rational 'rational) (fn [x y] (tag (sub-rat x y))))
+    (put-op 'mul '(rational 'rational) (fn [x y] (tag (mult-rat x y))))
+    (put-op 'div '(rational 'rational) (fn [x y] (tag (div-rat x y))))
+    (put-op 'make 'rational (fn [n d] (tag (make-rat n d))))
+    'done))
+
+(defn make-rational [n d]
+  ((get-op 'make 'rational) n d))
+
+(defn install-rectangular-package []
+  (letfn [(tag [x] (attach-tag 'rectangular x))
+          (make-from-real-imag [x y] (list x y))
+          (make-from-mag-ang [r a] 
+            (list (* r (math/cos a)) (* r (math/sin a))))]
+    ;; interface to the rest of the system
+    (put-op 'make-from-real-imag 'rectangular
+            (fn [x y] (tag (make-from-real-imag x y))))
+    (put-op 'make-from-mag-ang 'rectangular
+            (fn [r a] (tag (make-from-mag-ang r a))))
+    'done))
+
+(defn install-polar-package []
+  (letfn [(tag [x] (attach-tag 'polar x))
+          (make-from-mag-ang [r a] (list r a))
+          (make-from-real-imag [x y]
+            (list (math/sqrt (+ (math/pow x 2) (math/pow y 2)))
+                  (math/atan2 y x)))]
+    ;; interface to the rest of the system
+    (put-op 'make-from-real-imag 'polar
+            (fn [x y] (tag (make-from-real-imag x y))))
+    (put-op 'make-from-mag-ang 'polar
+            (fn [r a] (tag (make-from-mag-ang r a))))
+    'done))
+
+(defn install-complex-package []
+  ;; imported procedures from rectangular and polar packages
+  (letfn [(make-from-real-imag [x y]
+            ((get-op 'make-from-real-imag 'rectangular) x y))
+          (make-from-mag-ang [r a]
+            ((get-op 'make-from-mag-ang 'polar) r a))
+          ;; internal procedures
+          (add-complex [z1 z2]
+            (make-from-real-imag (+ (real-part z1) (real-part z2))
+                                 (+ (imag-part z1) (imag-part z2))))
+          (sub-complex [z1 z2]
+            (make-from-real-imag (- (real-part z1) (real-part z2))
+                                 (- (imag-part z1) (imag-part z2))))
+          (mul-complex [z1 z2]
+            (make-from-mag-ang (* (magnitude z1) (magnitude z2))
+                               (+ (angle z1) (angle z2))))
+          (div-complex [z1 z2]
+            (make-from-mag-ang (/ (magnitude z1) (magnitude z2))
+                               (- (angle z1) (angle z2))))
+
+          ;; interface helper
+          (tag [z] (attach-tag 'complex z))]
+
+    ;; interface to rest of the system
+    (put-op 'add '(complex complex)
+            (fn [z1 z2] (tag (add-complex z1 z2))))
+    (put-op 'sub '(complex complex)
+            (fn [z1 z2] (tag (sub-complex z1 z2))))
+    (put-op 'mul '(complex complex)
+            (fn [z1 z2] (tag (mul-complex z1 z2))))
+    (put-op 'div '(complex complex)
+            (fn [z1 z2] (tag (div-complex z1 z2))))
+    (put-op 'make-from-real-imag 'complex
+            (fn [x y] (tag (make-from-real-imag x y))))
+    (put-op 'make-from-mag-ang 'complex
+            (fn [r a] (tag (make-from-mag-ang r a))))
+
+    'done))
+
+(install-rectangular-package)
+(install-polar-package)
+(install-complex-package)
+
+(defn make-complex-from-real-imag [x y]
+  ((get-op 'make-from-real-imag 'complex) x y))
+
+@op-table
+
+(get-in @op-table ['make-from-real-imag 'complex])
+
+(defn make-complex-from-mag-ang [r a]
+  ((get-op 'make-from-mag-ang 'complex) r a))
+
+(make-complex-from-real-imag 4 3)
