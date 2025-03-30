@@ -3,7 +3,7 @@
    [chapter-1.chapter-1 :refer [gcd]]
    [chapter-2.chapter-2 :refer [print-rat]]))
 
-;; Define a beer version of make-rat that handles both 
+;; Define a better version of make-rat that handles both 
 ;; positive and negative arguments. make-rat should
 ;; normalize the sign so that if the rational number is positive,
 ;; both the numerator and denominator are positive, and if

@@ -1,0 +1,103 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "clojure-lsp@latest": {
+      "last_modified": "2025-03-11T17:52:14Z",
+      "resolved": "github:NixOS/nixpkgs/0d534853a55b5d02a4ababa1d71921ce8f0aee4c#clojure-lsp",
+      "source": "devbox-search",
+      "version": "2025.02.07-16.11.24",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/vrrprx6a54k0haw5vlr5axfh7ik5ji5m-clojure-lsp-2025.02.07-16.11.24",
+              "default": true }
+          ],
+          "store_path": "/nix/store/vrrprx6a54k0haw5vlr5axfh7ik5ji5m-clojure-lsp-2025.02.07-16.11.24"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/r02ikp671ikbq4914bwzh4xyja2qgls8-clojure-lsp-2025.02.07-16.11.24",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/r02ikp671ikbq4914bwzh4xyja2qgls8-clojure-lsp-2025.02.07-16.11.24"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/fxnjjfz3ra188ajcrslxf440bqkvdz79-clojure-lsp-2025.02.07-16.11.24",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/fxnjjfz3ra188ajcrslxf440bqkvdz79-clojure-lsp-2025.02.07-16.11.24"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/kyg9l06f971p31xfz3psc4r6r6gm7wrp-clojure-lsp-2025.02.07-16.11.24",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/kyg9l06f971p31xfz3psc4r6r6gm7wrp-clojure-lsp-2025.02.07-16.11.24"
+        }
+      }
+    },
+    "clojure@latest": {
+      "last_modified": "2025-03-18T04:27:45Z",
+      "resolved": "github:NixOS/nixpkgs/3549532663732bfd89993204d40543e9edaec4f2#clojure",
+      "source": "devbox-search",
+      "version": "1.12.0.1530",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/1phbdzxrjhjwp185gwg1ijjrxdgd3npf-clojure-1.12.0.1530",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/1phbdzxrjhjwp185gwg1ijjrxdgd3npf-clojure-1.12.0.1530"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/mg4s7cwy2971k81v9jd0day70xpkgb7h-clojure-1.12.0.1530",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/mg4s7cwy2971k81v9jd0day70xpkgb7h-clojure-1.12.0.1530"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/cnyi7vv4cys8qfm86wk060dpw6zkhh20-clojure-1.12.0.1530",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/cnyi7vv4cys8qfm86wk060dpw6zkhh20-clojure-1.12.0.1530"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/77dswn20zf3yzszj800kf96cbw4ss3j0-clojure-1.12.0.1530",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/77dswn20zf3yzszj800kf96cbw4ss3j0-clojure-1.12.0.1530"
+        }
+      }
+    },
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "resolved": "github:NixOS/nixpkgs/bd3bac8bfb542dbde7ffffb6987a1a1f9d41699f?lastModified=1743014863&narHash=sha256-jAIUqsiN2r3hCuHji80U7NNEafpIMBXiwKlSrjWMlpg%3D"
+    }
+  }
+}
