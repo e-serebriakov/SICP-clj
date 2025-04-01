@@ -1,15 +1,16 @@
-(ns chapter-2.exercise-2-79
+(ns chapter-2.exercise-2-80
   (:require
     [chapter-2.chapter-2 :refer 
       [put-op get-op attach-tag apply-generic real-part imag-part magnitude angle]]
     [chapter-1.chapter-1 :refer [gcd]]))
 
 (comment
-  "Define a generic equality predicate equ? that
-  tests the equality of two numbers, and install it in the generic
-  arithmetic package. This operation should work for ordinary numbers,
-  rational numbers, and complex numbers."
+  "Define a generic predicate =zero? that tests
+  if its argument is zero, and install it in the generic arithmetic package.
+  This operation should work for ordinary numbers, rational numbers,
+  and complex numbers."
 )
+(defn =zero? [x]  (apply-generic '=zero? x))
 (defn equ? [x y] (apply-generic 'equ? x y))
 
 (defn install-lisp-number-package []
@@ -19,6 +20,7 @@
     (put-op 'mul '(lisp-number lisp-number) (fn [x y] (tag (* x y))))
     (put-op 'div '(lisp-number lisp-number) (fn [x y] (tag (/ x y))))
     (put-op 'equ? '(lisp-number lisp-number) (fn [x y] (= x y)))
+    (put-op '=zero? '(lisp-number) zero?)
     (put-op 'make 'lisp-number (fn [x] (tag x)))
     'done))
 
@@ -27,8 +29,8 @@
 
   (def make (get-op 'make 'lisp-number))
 
-  (equ? (make 3) (make 4)) ;; Returns false
-  (equ? (make 3) (make 3)) ;; Returns true
+  (=zero? (make 4)) ;; Returns false
+  (=zero? (make 0)) ;; Returns true
 )
 
 (defn install-rational-package []
@@ -56,13 +58,17 @@
           (equ? [x y]
             (= (* (numer x) (denom y))
                (* (numer y) (denom x))))
+          (=zero? [x]
+            (and (zero? (numer x))
+                 (not= (denom x) 0)))
           (tag [x] (attach-tag 'rational x))]
 
     (put-op 'add '(rational rational) (fn [x y] (tag (add-rat x y))))
     (put-op 'sub '(rational rational) (fn [x y] (tag (sub-rat x y))))
     (put-op 'mul '(rational rational) (fn [x y] (tag (mult-rat x y))))
     (put-op 'div '(rational rational) (fn [x y] (tag (div-rat x y))))
-    (put-op 'equ? '(rational rational) (fn [x y] (equ? x y)))
+    (put-op 'equ? '(rational rational) (fn [x]  (=zero? x)))
+    (put-op '=zero? '(rational) (fn [x y] (equ? x y)))
     (put-op 'make 'rational (fn [n d] (tag (make-rat n d))))
     'done))
 
@@ -89,6 +95,9 @@
           (equ? [x y]
             (and (= (real-part x) (real-part y))
                  (= (imag-part x) (imag-part y))))
+
+          (=zero? [x]
+            (zero? (magnitude x)))
           
           ;; interface helper
           (tag [z] (attach-tag 'complex z))]
@@ -108,5 +117,6 @@
             (fn [r a] (tag (make-from-mag-ang r a))))
 
     (put-op 'equ? '(complex complex) equ?)
+    (put-op '=zero? '(complex) =zero?)
     
     'done))
