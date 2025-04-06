@@ -1,6 +1,6 @@
 (ns chapter-2.exercise-2-5 
   (:require
-    [clojure.math :as math]))
+   [clojure.math :as math]))
 
 ;; Show that we can represent pairs of nonnegtive 
 ;; integers using only numbers and arithmetic operations

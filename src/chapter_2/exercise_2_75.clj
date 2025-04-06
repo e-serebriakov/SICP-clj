@@ -1,6 +1,6 @@
 (ns chapter-2.exercise-2-75 
   (:require
-    [clojure.math :as math]))
+   [clojure.math :as math]))
 
 ;; Implement the constructor make-from-magang in message-passing style.
 ;; this procedure should be analogous to the make-from-real-imag procedure 

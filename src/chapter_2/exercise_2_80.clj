@@ -1,8 +1,9 @@
 (ns chapter-2.exercise-2-80
   (:require
-    [chapter-2.chapter-2 :refer 
-      [put-op get-op attach-tag apply-generic real-part imag-part magnitude angle]]
-    [chapter-1.chapter-1 :refer [gcd]]))
+   [chapter-1.chapter-1 :refer [gcd]]
+   [chapter-2.chapter-2 :refer 
+      [angle apply-generic attach-tag get-op imag-part magnitude put-op
+       real-part]]))
 
 (comment
   "Define a generic predicate =zero? that tests

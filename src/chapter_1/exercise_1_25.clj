@@ -1,6 +1,6 @@
 (ns chapter-1.exercise-1-25 
   (:require
-    [clojure.math :as math]))
+   [clojure.math :as math]))
 
 ;; Alyssa P. Hacker complains that we went to
 ;; a lot of extra work in writing expmod. After all, she says,

@@ -1,6 +1,6 @@
 (ns chapter-2.exercise-2-66 
   (:require
-   [chapter-2.chapter-2 :refer [entry make-tree left-branch right-branch]]))
+   [chapter-2.chapter-2 :refer [entry left-branch make-tree right-branch]]))
 
 ;; Implement the lookup procedure for the case
 ;; where the set of records is structured as a binary tree, 

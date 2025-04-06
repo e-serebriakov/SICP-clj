@@ -1,5 +1,6 @@
 (ns chapter-2.exercise-2-78
-  (:require [chapter-2.chapter-2 :as ch2]))
+  (:require
+   [chapter-2.chapter-2 :as ch2]))
 
 (comment 
   "The internal procedures in the scheme-number
