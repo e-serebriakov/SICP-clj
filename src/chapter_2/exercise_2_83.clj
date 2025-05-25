@@ -15,8 +15,8 @@
   (make-rational (contents n) 1))
 
 (defn rational->complex [r]
-  (make-complex-from-real-imag (/ (double (numer r))
-                                  (denom r))
+  (make-complex-from-real-imag (/ (double (numer (contents r)))
+                                  (denom (contents r)))
                                0))
 
 (defn real->complex [x]
@@ -38,6 +38,8 @@
           (fn [x] (real->complex x)))
 
   'done)
+
+(install-raise-package)
 
 (defn raise [x]
   (apply-generic 'raise x))

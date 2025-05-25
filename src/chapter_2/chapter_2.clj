@@ -620,6 +620,8 @@ a
     (put-op 'make 'rational (fn [n d] (tag (make-rat n d))))
     'done))
 
+(install-rational-package)
+
 (defn make-rational [n d]
   ((get-op 'make 'rational) n d))
 
@@ -679,3 +681,19 @@ a
   "Get coercion function from type1 to type2, or nil if none exists"
   [type1 type2]
   (get-in @coercion-table [type1 type2]))
+
+;; Integer package
+(defn install-integer-package []
+  (letfn [(tag [x] (attach-tag 'integer x))]
+    ;; interface to rest of the system
+    (put-op 'make 'integer
+            (fn [x] (tag x)))
+    (put-op 'add 'integer
+            (fn [a b] (tag (+ a b))))
+    'done))
+
+(install-integer-package)
+
+;; Constructor for integers
+(defn make-integer [n]
+  ((get-op 'make 'integer) n))
