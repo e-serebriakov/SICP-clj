@@ -697,3 +697,21 @@ a
 ;; Constructor for integers
 (defn make-integer [n]
   ((get-op 'make 'integer) n))
+
+;; Symbolic algebra
+(defn install-polynomial-package
+  "Representation of poly"
+  []
+
+  (defn make-poly [variable term-list]
+    (cons variable term-list))
+
+  (defn variale [p] (first p))
+
+  (defn term-list [p] (rest p))
+
+  (defn same-variable? [v1 v2]
+    (and (variable? v1) (variable? v2) (= v1 v2)))
+
+  (defn variable? [x]
+    (symbol? x)))

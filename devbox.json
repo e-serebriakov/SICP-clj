@@ -8,11 +8,15 @@
   ],
   "shell": {
     "init_hook": [
-      "echo 'Welcome to devbox'",
+      "echo 'Welcome to devbox'"
     ],
     "scripts": {
-      "test": ["echo \"Error: no test specified\" && exit 1"],
-      "repl": ["clj -M:repl/conjure"]
+      "test": [
+        "echo \"Error: no test specified\" && exit 1"
+      ],
+      "repl": [
+        "clj -M:repl/conjure"
+      ]
     }
   }
 }

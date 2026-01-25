@@ -60,16 +60,16 @@
   (letfn [(tag [x] (attach-tag 'rectangular x))]
     (put-op 'real-part '(rectangular) first)
     (put-op 'imag-part '(rectangular) second)
-    (put-op 'magnitude '(rectangular) 
+    (put-op 'magnitude '(rectangular)
             (fn [z] (Math/sqrt (+ (* (first z) (first z))
-                                 (* (second z) (second z))))))
+                                  (* (second z) (second z))))))
     (put-op 'angle '(rectangular)
             (fn [z] (Math/atan2 (second z) (first z))))
     (put-op 'make-from-real-imag 'rectangular
             (fn [x y] (tag [x y])))
     (put-op 'make-from-mag-ang 'rectangular
             (fn [r a] (tag [(* r (Math/cos a))
-                           (* r (Math/sin a))])))
+                            (* r (Math/sin a))])))
     'done))
 
 ;; Install all necessary packages
@@ -80,12 +80,12 @@
   (install-rational-package)
   (install-complex-package)
   (install-raise-package)
-  
+
   ;; Then install projection operations
   (put-op 'project '(complex) project-complex)
   (put-op 'project '(real) project-real)
   (put-op 'project '(rational) project-rational)
-  
+
   'done)
 
 ;; Install packages
