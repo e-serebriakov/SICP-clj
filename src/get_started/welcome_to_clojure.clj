@@ -1,7 +1,8 @@
 (ns get-started.welcome-to-clojure
-  (:require [clojure.repl :refer [source apropos dir pst doc find-doc]]
-            [clojure.string :as string]
-            [clojure.test :refer [is are]]))
+  (:require
+   [clojure.repl :refer [doc source]]
+   [clojure.string :as string]
+   [clojure.test :refer [are is]]))
 
 ;; Welcome to Clojure! ♥️
 

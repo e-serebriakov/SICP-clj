@@ -1,4 +1,4 @@
-(ns chapter-1.chapter-1 
+(ns chapter-1.chapter-1
   (:require
    [clojure.math :refer [cos]]))
 
@@ -58,13 +58,11 @@ size
 ;; (+ 36 100)
 ;; 136
 
-(defn abs-1 [x] 
+(defn abs-1 [x]
   (cond
     (> x 0) x
     (< x 0) (- x)
-    (= x 0) 0
-    )
-  )
+    (= x 0) 0))
 
 (abs-1 0)
 (abs-1 1)
@@ -94,7 +92,7 @@ size
 (defn good-enough? [guess x]
   (< (abs (- (sqr guess) x)) 0.001))
 
-(defn average [a b] 
+(defn average [a b]
   (/ (+ a b) 2))
 
 (defn improve [guess x]
@@ -115,9 +113,9 @@ size
 (defn sqrt2 [x] (letfn [(good-enough? [guess] (< (abs (- (* guess guess) x)) 0.001))
                         (average [a b] (/ (+ a b) 2))
                         (improve [guess] (average guess (/ x guess)))
-                        (sqrt-iter [guess] (if (good-enough? guess )
-                                               guess
-                                               (sqrt-iter (improve guess))))]
+                        (sqrt-iter [guess] (if (good-enough? guess)
+                                             guess
+                                             (sqrt-iter (improve guess))))]
                   (sqrt-iter 1.0)))
 
 (sqrt2 9)
@@ -131,14 +129,14 @@ size
 
 (defn factorial2 [n]
   (letfn [(iter [product counter]
-                (if (> counter n)
-                  product
-                  (iter (* product counter) (+ counter 1))))]
-  (iter 1 1)))
+            (if (> counter n)
+              product
+              (iter (* product counter) (+ counter 1))))]
+    (iter 1 1)))
 
 (factorial2 3)
 
-(defn count-change [amount] 
+(defn count-change [amount]
   (letfn [(first-denomination [kind-of-coins] (cond (= kind-of-coins 1) 1
                                                     (= kind-of-coins 2) 5
                                                     (= kind-of-coins 3) 10
@@ -151,7 +149,7 @@ size
                                        :else (+ (cc amount (- kind-of-coins 1))
                                                 (cc (- amount (first-denomination kind-of-coins))
                                                     kind-of-coins))))]
-  (cc amount 5)))
+    (cc amount 5)))
 
 (count-change 100)
 
@@ -159,7 +157,7 @@ size
   (if (= b 0)
     a
     (gcd b (mod a b))))
-   
+
 (gcd 206 40)
 
 (defn sum [term a next b]
@@ -225,7 +223,7 @@ size
 
 (sqrt 9)
 
-(defn square [x] (* x x ))
+(defn square [x] (* x x))
 
 (defn sqrt-newton [x]
   (fixed-point-of-transform #(- (square %) x) newton-transform 1.0))

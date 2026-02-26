@@ -1,0 +1,22 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.14.0/.schema/devbox.schema.json",
+  "packages": [
+    "clojure-lsp@latest",
+    "clojure@latest",
+    "clj-kondo@latest",
+    "git@latest"
+  ],
+  "shell": {
+    "init_hook": [
+      "echo 'Welcome to devbox'"
+    ],
+    "scripts": {
+      "test": [
+        "echo \"Error: no test specified\" && exit 1"
+      ],
+      "repl": [
+        "clj -M:repl/conjure"
+      ]
+    }
+  }
+}

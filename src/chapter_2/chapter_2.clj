@@ -1,0 +1,717 @@
+(ns chapter-2.chapter-2
+  (:require
+   [chapter-1.chapter-1 :refer [gcd]]
+   [chapter-1.exercise-1-33 :refer [prime?]]
+   [chapter-2.exercise-2-46 :refer [add-vect make-vect scale-vect sub-vect
+                                    xcor-vect ycor-vect]]
+   [chapter-2.exercise-2-47 :refer [edge-1-frame edge-2-frame make-frame
+                                    origin-frame]]
+   [clojure.math :as math]))
+
+(defn make-rat [n d] [n d])
+
+(defn make-rat [n d]
+  (let [g (gcd n d)]
+    [(/ n g) (/ d g)]))
+
+(def numer first)
+
+(def denom last)
+
+(defn add-rat [x y]
+  (make-rat (+ (* (numer x) (denom y))
+               (* (numer y) (denom x)))
+            (* (denom x) (denom y))))
+
+(defn sub-rat [x y]
+  (make-rat (- (* (numer x) (denom y))
+               (* (numer y) (denom x)))
+            (* (denom x) (denom y))))
+
+(defn mult-rat [x y]
+  (make-rat (* (numer x) (numer y))
+            (* (denom x) (denom y))))
+
+(defn div-rat [x y]
+  (make-rat (* (numer x) (denom y))
+            (* (numer y) (denom x))))
+
+(defn equal-rat? [x y]
+  (= (* (numer x) (denom y))
+     (* (numer y) (denom x))))
+
+(defn print-rat [x]
+  (print "")
+  (print (numer x))
+  (print "/")
+  (print (denom x)))
+
+(def x [1 2])
+(first x)
+(last x)
+(rest x)
+(subvec x 1)
+(def y [3 4])
+(def pair-of-pairs [x y])
+(first (first pair-of-pairs))
+
+(def one-half (make-rat 1 2))
+(def one-third (make-rat 1 3))
+(print-rat one-half)
+(print-rat (add-rat one-half one-third))
+(print-rat (add-rat one-third one-third))
+
+(defn cons1 [x y] [x y])
+(cons1 1
+       (cons1 2
+              (cons1 3
+                     (cons1 4 nil))))
+
+(def l (list 1 2 3 4))
+(first l)
+(rest l)
+(nth l 2)
+(conj l 5)
+(concat l l)
+(reduce conj l l)
+
+(defn scale-tree [root factor]
+  (cond
+    (nil? root) nil
+    (number? root) (* root factor)
+    :else (list (scale-tree (first root) factor)
+                (scale-tree (last root) factor))))
+
+(scale-tree (list (list 1 2) (list 3 (list 4 5))) 10)
+
+(defn scale-tree [root factor]
+  (map (fn [node]
+         (if (number? node)
+           (* node factor)
+           (scale-tree node factor)))
+       root))
+
+(scale-tree (list (list 1 2) (list 3 (list 4 5))) 10)
+
+(defn filter-1 [predicate sequence]
+  (when (seq sequence)
+    (if (predicate (first sequence))
+      (cons (first sequence) (filter-1 predicate (rest sequence)))
+      (filter-1 predicate (rest sequence)))))
+
+(filter-1 odd? (list 1 2 3 4 5))
+
+(defn accumulate [op initial sequence]
+  (if (empty? sequence)
+    initial
+    (op (first sequence)
+        (accumulate op initial (rest sequence)))))
+
+(accumulate + 0 (list 1 2 3 4 5))
+
+(defn enumerate-interval [low high]
+  (if (> low high)
+    nil
+    (cons low (enumerate-interval (inc low) high))))
+
+(enumerate-interval 1 5)
+
+(defn enumerate-tree [tree]
+  (cond
+    (not (sequential? tree)) (list tree)
+    (empty? tree) nil
+    :else (concat (enumerate-tree (first tree))
+                  (enumerate-tree (rest tree)))))
+
+(defn enumerate-tree [tree]
+  (if (sequential? tree)
+    (mapcat enumerate-tree (seq tree))
+    (list tree)))
+
+(enumerate-tree '(1 (2 3) 4))
+(enumerate-tree '((1 2) (3 4)))
+
+(defn sum-odd-squares [tree]
+  (accumulate + 0 (map #(* % %) (filter odd? (enumerate-tree tree)))))
+
+(sum-odd-squares '(1 (2 3) 4))
+
+(defn fib [n]
+  (if (< n 2)
+    n
+    (+ (fib (- n 1))
+       (fib (- n 2)))))
+
+(defn even-fibs [n]
+  (filter even? (map fib (enumerate-interval 0 n))))
+
+(even-fibs 4)
+
+;; Nested Mappings
+(accumulate concat nil (map (fn [i]
+                              (map (fn [j] (list i j))
+                                   (enumerate-interval 1 (dec i))))
+                            (enumerate-interval 1 10)))
+
+(defn flatmap [proc seq]
+  (accumulate concat nil (map proc seq)))
+
+(defn prime-sum? [pair]
+  (prime? (+ (first pair) (last pair))))
+
+(defn make-pair-sum [pair]
+  (list (first pair) (last pair) (+ (first pair) (last pair))))
+
+(defn prime-sum-pairs [n]
+  (map make-pair-sum
+       (filter prime-sum? (flatmap
+                           (fn [i]
+                             (map (fn [j] (list i j))
+                                  (enumerate-interval 1 (dec i))))
+                           (enumerate-interval 1 n)))))
+
+(prime-sum-pairs 10)
+
+(defn permutations [s]
+  (if (empty? s) (list nil)
+      (flatmap (fn [x]
+                 (map (fn [p] (cons x p))
+                      (permutations (filter #(not= x %) s))))
+               s)))
+
+(permutations (list 1 2 3))
+
+;; 2.2.4 Example: A Picture Language
+(defn test-painter
+  "Creates a simple test painter that just returns its label"
+  [label]
+  label)
+
+(defn beside
+  "Combines two painters side by side"
+  [p1 p2]
+  (str "(" p1 " beside " p2 ")"))
+
+(defn below
+  "Combines two painters one below another"
+  [p1 p2]
+  (str "(" p1 " below " p2 ")"))
+
+(defn frame-coord-map [frame]
+  (fn [v]
+    (add-vect
+     (origin-frame frame)
+     (add-vect (scale-vect (xcor-vect v) (edge-1-frame frame))
+               (scale-vect (ycor-vect v) (edge-2-frame frame))))))
+
+(defn transform-painter [painter origin corner1 corner2]
+  (fn [frame]
+    (let [m (frame-coord-map frame)
+          new-origin (m origin)]
+      (painter (make-frame
+                new-origin
+                (sub-vect (m corner1) new-origin)
+                (sub-vect (m corner2) new-origin))))))
+
+(defn beside [painter1 painter2]
+  (let [split-point (make-vect 0.5 0.0)
+        paint-left (transform-painter painter1
+                                      (make-vect 0.0 0.0)
+                                      split-point
+                                      (make-vect 0.0 1.0))
+        paint-right (transform-painter painter2
+                                       split-point
+                                       (make-vect 1.0 0.0)
+                                       (make-vect 0.5 1.0))]
+    (fn [frame]
+      (paint-left frame)
+      (paint-right frame))))
+
+(defn flip-vert [painter]
+  (transform-painter painter
+                     (make-vect 0.0 1.0)    ; new origin point
+                     (make-vect 1.0 1.0)    ; new end point for edge1
+                     (make-vect 0.0 0.0)))  ; new end point for edge2
+
+(defn square-of-four [tl tr bl br]
+  (fn [painter]
+    (let [top (beside (tl painter) (tr painter))
+          bottom (beside (bl painter) (br painter))]
+      (below bottom top))))
+
+;; 2.3 Symbolic Data
+(def a 1)
+a
+(+ 1 a)
+(first '(a b c))
+(= 'a 'a) ; => true
+
+(defn memq
+  "If the symbol is not contained in the
+   list (i.e., is not eq? to any item in the list), then memq returns false. Other-
+   wise, it returns the sublist of the list beginning with the first occurrence
+   of the symbol:
+  
+   Examples:
+   (memq 'apple '(pear apple prune)) => (apple prune)
+   (memq 'apple '(pear banana prune)) => false"
+  [item x]
+  (cond (empty? x) false
+        (= item (first x)) x
+        :else (memq item (rest x))))
+
+(memq 'apple '(pear banana prune))
+(memq 'apple '(pear apple prune))
+
+(defn variable? [x]
+  (symbol? x))
+
+(defn same-variable? [v1 v2]
+  (and (variable? v1) (variable? v2) (= v1 v2)))
+
+(defn make-sum-v1 [v1 v2]
+  (list '+ v1 v2))
+
+(defn =number? [exp num]
+  (and (number? exp) (= exp num)))
+
+(defn make-sum [a1 a2]
+  (cond (=number? a1 0) a2
+        (=number? a2 0) a1
+        (and (number? a1) (number? a2)) (+ a1 a2)
+        :else (list '+ a1 a2)))
+
+(defn make-product-v1 [v1 v2]
+  (list '* v1 v2))
+
+(defn make-product [m1 m2]
+  (cond (or (=number? m1 0) (=number? m2 0)) 0
+        (=number? m1 1) m2
+        (=number? m2 1) m1
+        (and (number? m1) (number? m2)) (* m1 m2)
+        :else (list '* m1 m2)))
+
+(defn sum? [x]
+  (and (seq? x) (= (first x) '+)))
+
+(defn addend [x]
+  (second x))
+
+(defn augend [x]
+  (last x))
+
+(defn product? [x]
+  (and (seq? x) (= (first x) '*)))
+
+(defn multiplier [p]
+  (second p))
+
+(defn multiplicand [p]
+  (last p))
+
+(defn deriv [exp var]
+  (cond (number? exp) 0
+        (variable? exp) (if (same-variable? exp var) 1 0)
+        (sum? exp) (make-sum (deriv (addend exp) var)
+                             (deriv (augend exp) var))
+        (product? exp) (make-sum
+                        (make-product (multiplier exp)
+                                      (deriv (multiplicand exp) var))
+                        (make-product (deriv (multiplier exp) var)
+                                      (multiplicand exp)))
+        :else (throw (ex-info "unknown expression type: DERIV" {:expression exp}))))
+
+(deriv '(+ x 3) 'x)
+(deriv '(* x y) 'x)
+(deriv '(* (* x y) (+ x 3)) 'x)
+
+;; Example: Representing Sets
+(defn elements-of-set? [x set]
+  (cond (empty? set) false
+        (= (first set) x) true
+        :else (elements-of-set? x (rest set))))
+
+(elements-of-set? 4 '(1 2 3 4))
+
+(defn adjoin-set [x set]
+  (if (elements-of-set? x set)
+    set
+    (cons x set)))
+
+(defn intersection-set [s1 s2]
+  (cond (or (empty? s1) (empty? s2)) '()
+        (elements-of-set? (first s1) s2) (cons (first s1) (intersection-set (rest s1) s2))
+        :else (intersection-set (rest s1) s2)))
+
+(intersection-set '(1 2 3) '(2 3 4))
+
+(defn elements-of-ordered-set? [x set]
+  (cond (empty? set) false
+        (= (first set) x) true
+        (> (first set) x) false
+        :else (elements-of-ordered-set? x (rest set))))
+
+(elements-of-ordered-set? 3 '(1 2 3))
+(elements-of-ordered-set? 4 '(1 2 5 6))
+
+(defn intersection-ordered-set [s1 s2]
+  (if (or (empty? s1) (empty? s2))
+    '()
+    (let [[x1 & xs1] s1
+          [x2 & xs2] s2]
+      (cond (= x1 x2) (cons x1 (intersection-ordered-set xs1 xs2))
+            (< x1 x2) (intersection-ordered-set xs1 s2)
+            (< x2 x1) (intersection-ordered-set s1 xs2)))))
+
+(intersection-ordered-set '(1 2 3) '(3 4 5))
+
+;; Sets as binary trees
+(defn entry [tree] (first tree))
+(defn left-branch [tree] (second tree))
+(defn right-branch [tree] (last tree))
+(defn make-tree [entry left right]
+  (list entry left right))
+
+(defn elements-of-tree-set? [x set]
+  (cond (empty? set) false
+        (= x (entry set)) true
+        (< x (entry set)) (elements-of-tree-set? x (left-branch set))
+        (> x (entry set)) (elements-of-tree-set? x (right-branch set))))
+
+(defn adjoin-tree-set [x set]
+  (cond (empty? set) (make-tree x '() '())
+        (= x (entry set)) set
+        (< x (entry set)) (make-tree (entry set)
+                                     (adjoin-tree-set x (left-branch set))
+                                     (right-branch set))
+        (> x (entry set)) (make-tree (entry set)
+                                     (left-branch set)
+                                     (adjoin-tree-set x (right-branch set)))))
+
+;; Huffman trees
+(defn make-leaf [symbol weight]
+  (list 'leaf symbol weight))
+
+(defn leaf? [object] (= (first object) 'leaf))
+
+(defn symbol-leaf [x] (second x))
+(defn weight-leaf [x] (last x))
+
+(defn append [list1 list2]
+  (if (empty? list1)
+    list2
+    (cons (first list1) (append (rest list1) list2))))
+
+(defn left-branch [tree] (first tree))
+(defn right-branch [tree] (second tree))
+(defn symbols [tree]
+  (if (leaf? tree)
+    (list (symbol-leaf tree))
+    (nth tree 2)))
+(defn weight [tree]
+  (if (leaf? tree)
+    (weight-leaf tree)
+    (last tree)))
+
+(defn make-code-tree [left right]
+  (list left
+        right
+        (concat (symbols left) (symbols right))
+        (+ (weight left) (weight right))))
+
+(defn choose-branch [bit branch]
+  (cond (zero? bit) (left-branch branch)
+        (= bit 1) (right-branch branch)
+        :else (throw (ex-info "bad bit" {:bit bit}))))
+
+;; (defn decode [bits tree]
+;;   (letfn [(decode-1 [bits current-branch]
+;;                     (if (empty? bits)
+;;                       '()
+;;                       (let [next-branch (choose-branch (first bits) current-branch)]
+;;                         (if (leaf? next-branch)
+;;                           (cons (symbol-leaf next-branch)
+;;                                 (decode-1 (rest bits) tree))
+;;                           (decode-1 (rest bits) next-branch)))))]
+;;     (decode-1 bits tree)))
+
+(defn decode [bits tree]
+  (->> bits
+       (reduce
+        (fn [[result current-branch] bit]
+          (let [next-branch (choose-branch bit current-branch)]
+            (if (leaf? next-branch)
+              [(conj result (symbol-leaf next-branch)) tree]
+              [result next-branch])))
+        [[] tree])
+       first))
+
+(defn adjoin-set [x set]
+  (cond (empty? set) (list x)
+        (< (weight x) (weight (first set))) (cons x set)
+        :else (cons (first set) (adjoin-set x (rest set)))))
+
+(defn make-leaf-set [pairs]
+  (if (empty? pairs)
+    '()
+    (let [pair (first pairs)]
+      (adjoin-set (make-leaf (first pair)
+                             (last pair))
+                  (make-leaf-set (rest pairs))))))
+
+;; Multiple Representations for Abstract Data
+
+(def op-table (atom {}))
+
+(defn put-op [op types proc]
+  (swap! op-table assoc-in [op types] proc))
+
+(defn get-op [op types]
+  (get-in @op-table [op types]))
+
+;; (defn make-from-real-imag [x y] (list x y))
+;; (defn make-from-mag-ang [r a]
+;;   (list (* r (math/cos a)) (* r (math/sin a))))
+
+(defn attach-tag [type-tag contents]
+  (list type-tag contents))
+
+(defn type-tag [datum]
+  (if (and (seq? datum)
+           (= (count datum) 2))
+    (first datum)
+    (throw (ex-info "Bad tagged datum: TYPE-TAG" {:datum datum}))))
+
+(defn contents [datum]
+  (if (and (seq? datum)
+           (= (count datum) 2))
+    (second datum)
+    (throw (ex-info "Bad tagged datum: CONTENTS" {:datum datum}))))
+
+(defn rectangular? [z]
+  (= (type-tag z) 'rectangular))
+
+(defn polar? [z]
+  (= (type-tag z) 'polar))
+
+(defn real-part-rectangular [z]
+  (first z))
+
+(defn imag-part-rectangular [z]
+  (second z))
+
+(defn magnitude-rectangular [z]
+  (math/sqrt (+ (math/pow (real-part-rectangular z) 2)
+                (math/pow (imag-part-rectangular z) 2))))
+
+(defn angle-rectangular [z]
+  (math/atan2 (imag-part-rectangular z)
+              (real-part-rectangular z)))
+
+(defn make-from-real-imag-rectangular [x y]
+  (attach-tag 'rectangular (list x y)))
+
+(defn make-from-mag-ang-rectangular [r a]
+  (attach-tag 'rectangular (list (* r (math/cos a))
+                                 (* r (math/sin a)))))
+(defn magnitude-polar [z]
+  (first z))
+
+(defn angle-polar [z]
+  (second z))
+
+(defn real-part-polar [z]
+  (* (magnitude-polar z)
+     (math/cos (angle-polar z))))
+
+(defn imag-part-polar [z]
+  (* (magnitude-polar z) (math/sin (angle-polar z))))
+
+(defn make-from-real-imag-polar [x y]
+  (attach-tag 'polar (list (math/sqrt (+ (math/pow x 2)
+                                         (math/pow y 2)))
+                           (math/atan2 y x))))
+
+(defn make-from-mag-ang-polar [r a]
+  (attach-tag 'polar (list r a)))
+
+(defn real-part [z]
+  (cond (rectangular? z) (real-part-rectangular (contents z))
+        (polar? z) (real-part-polar (contents z))
+        :else (throw (ex-info "Unknown type: REAL PART" {:z z}))))
+
+(defn imag-part [z]
+  (cond (rectangular? z) (imag-part-rectangular (contents z))
+        (polar? z) (imag-part-polar (contents z))
+        :else (throw (ex-info "Unknown type: IMAG PART" {:z z}))))
+
+(defn magnitude [z]
+  (cond (rectangular? z) (magnitude-rectangular (contents z))
+        (polar? z) (magnitude-polar (contents z))
+        :else (throw (ex-info "Unknown type: MAGNITUDE" {:z z}))))
+
+(defn angle [z]
+  (cond (rectangular? z) (angle-rectangular (contents z))
+        (polar? z) (angle-polar (contents z))
+        :else (throw (ex-info "Unknown type: ANGLE" {:z z}))))
+
+(defn make-from-real-imag [x y]
+  (make-from-mag-ang-rectangular x y))
+
+(defn make-from-mag-ang [r a]
+  (make-from-mag-ang-polar r a))
+
+(defn add-complex [z1 z2]
+  (make-from-real-imag (+ (real-part z1) (real-part z2))
+                       (+ (imag-part z1) (imag-part z2))))
+
+;; 2.5 Systems with Generic Operations
+(defn apply-generic [op & args]
+  (let [type-tags (map type-tag args)
+        proc (get-op op type-tags)]
+    (if proc
+      (apply proc (map contents args))
+      (throw (ex-info "No method for these types: APPLY-GENERIC"
+                      {:op op :type-tags type-tags})))))
+
+(defn add [x y] (apply-generic 'add x y))
+(defn sub [x y] (apply-generic 'sub x y))
+(defn mul [x y] (apply-generic 'mul x y))
+(defn div [x y] (apply-generic 'div x y))
+(defn install-lisp-number-package []
+  (letfn [(tag [x] (attach-tag 'lisp-number x))]
+    (put-op 'add '(lisp-number lisp-number) (fn [x y] (tag (+ x y))))
+    (put-op 'sub '(lisp-number lisp-number) (fn [x y] (tag (- x y))))
+    (put-op 'mul '(lisp-number lisp-number) (fn [x y] (tag (* x y))))
+    (put-op 'div '(lisp-number lisp-number) (fn [x y] (tag (/ x y))))
+    (put-op 'make 'lisp-number (fn [x] (tag x)))
+    'done))
+
+(defn make-lisp-number [x]
+  ((get-op 'make 'lisp-number) x))
+
+(defn install-rational-package []
+  (letfn [(numer [x] (first x))
+          (denom [x] (last x))
+          (make-rat [n d]
+            (let [g (gcd n d)]
+              (list (/ n g) (/ d g))))
+          (add-rat [x y]
+            (make-rat (+ (* (numer x) (denom y))
+                         (* (numer y) (denom x)))
+                      (* (denom x) (denom y))))
+          (sub-rat [x y]
+            (make-rat (- (* (numer x) (denom y))
+                         (* (numer y) (denom x)))
+                      (* (denom x) (denom y))))
+
+          (mult-rat [x y]
+            (make-rat (* (numer x) (numer y))
+                      (* (denom x) (denom y))))
+
+          (div-rat [x y]
+            (make-rat (* (numer x) (denom y))
+                      (* (numer y) (denom x))))
+          (tag [x] (attach-tag 'rational x))]
+    (put-op 'add '(rational 'rational) (fn [x y] (tag (add-rat x y))))
+    (put-op 'sub '(rational 'rational) (fn [x y] (tag (sub-rat x y))))
+    (put-op 'mul '(rational 'rational) (fn [x y] (tag (mult-rat x y))))
+    (put-op 'div '(rational 'rational) (fn [x y] (tag (div-rat x y))))
+    (put-op 'make 'rational (fn [n d] (tag (make-rat n d))))
+    'done))
+
+(install-rational-package)
+
+(defn make-rational [n d]
+  ((get-op 'make 'rational) n d))
+
+(defn install-complex-package []
+  ;; imported procedures from rectangular and polar packages
+  (letfn [(make-from-real-imag [x y]
+            ((get-op 'make-from-real-imag 'rectangular) x y))
+          (make-from-mag-ang [r a]
+            ((get-op 'make-from-mag-ang 'polar) r a))
+          ;; internal procedures
+          (add-complex [z1 z2]
+            (make-from-real-imag (+ (real-part z1) (real-part z2))
+                                 (+ (imag-part z1) (imag-part z2))))
+          (sub-complex [z1 z2]
+            (make-from-real-imag (- (real-part z1) (real-part z2))
+                                 (- (imag-part z1) (imag-part z2))))
+          (mul-complex [z1 z2]
+            (make-from-mag-ang (* (magnitude z1) (magnitude z2))
+                               (+ (angle z1) (angle z2))))
+          (div-complex [z1 z2]
+            (make-from-mag-ang (/ (magnitude z1) (magnitude z2))
+                               (- (angle z1) (angle z2))))
+
+          ;; interface helper
+          (tag [z] (attach-tag 'complex z))]
+
+    ;; interface to rest of the system
+    (put-op 'add '(complex complex)
+            (fn [z1 z2] (tag (add-complex z1 z2))))
+    (put-op 'sub '(complex complex)
+            (fn [z1 z2] (tag (sub-complex z1 z2))))
+    (put-op 'mul '(complex complex)
+            (fn [z1 z2] (tag (mul-complex z1 z2))))
+    (put-op 'div '(complex complex)
+            (fn [z1 z2] (tag (div-complex z1 z2))))
+    (put-op 'make-from-real-imag 'complex
+            (fn [x y] (tag (make-from-real-imag x y))))
+    (put-op 'make-from-mag-ang 'complex
+            (fn [r a] (tag (make-from-mag-ang r a))))
+
+    'done))
+
+(defn make-complex-from-real-imag [x y]
+  ((get-op 'make-from-real-imag 'complex) x y))
+
+(defn make-complex-from-mag-ang [r a]
+  ((get-op 'make-from-mag-ang 'complex) r a))
+
+(def coercion-table (atom {}))
+
+(defn put-coercion
+  "Register a coercion function from type1 to type2"
+  [type1 type2 f]
+  (swap! coercion-table assoc-in [type1 type2] f))
+
+(defn get-coercion
+  "Get coercion function from type1 to type2, or nil if none exists"
+  [type1 type2]
+  (get-in @coercion-table [type1 type2]))
+
+;; Integer package
+(defn install-integer-package []
+  (letfn [(tag [x] (attach-tag 'integer x))]
+    ;; interface to rest of the system
+    (put-op 'make 'integer
+            (fn [x] (tag x)))
+    (put-op 'add 'integer
+            (fn [a b] (tag (+ a b))))
+    'done))
+
+(install-integer-package)
+
+;; Constructor for integers
+(defn make-integer [n]
+  ((get-op 'make 'integer) n))
+
+;; Symbolic algebra
+(defn install-polynomial-package
+  "Representation of poly"
+  []
+
+  (defn make-poly [variable term-list]
+    (cons variable term-list))
+
+  (defn variale [p] (first p))
+
+  (defn term-list [p] (rest p))
+
+  (defn same-variable? [v1 v2]
+    (and (variable? v1) (variable? v2) (= v1 v2)))
+
+  (defn variable? [x]
+    (symbol? x)))

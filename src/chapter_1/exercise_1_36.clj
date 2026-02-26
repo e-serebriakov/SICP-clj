@@ -1,6 +1,6 @@
 (ns chapter-1.exercise-1-36 
   (:require
-    [clojure.math :as math]))
+   [clojure.math :as math]))
 
 ;; Modify `fixed-point` so that it prints the
 ;; sequence of approximations it generates, using the newline

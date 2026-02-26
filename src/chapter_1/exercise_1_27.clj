@@ -1,6 +1,6 @@
 (ns chapter-1.exercise-1-27 
   (:require
-    [clojure.math :as math]))
+   [clojure.math :as math]))
 
 ;; Demonstrate that the Carmichael numbers
 ;; listed in Footnote 1.47 really do fool the Fermat test. That is,
